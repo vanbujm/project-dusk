@@ -1,45 +1,32 @@
-import React, { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { Auth0Provider } from '@auth0/auth0-react';
+import React from 'react';
+import { Heading, ThemeProvider } from 'theme-ui';
+import { theme } from './theme';
+import { Logo } from './Logo';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
+const App = () => (
+  <Auth0Provider
+    domain="dev-zah-ux2d.us.auth0.com"
+    clientId="4yMX6dqD1oA1neSRXsvltagqXJ8DGuJQ"
+    redirectUri={window.location.origin}
+  >
+    <ThemeProvider theme={theme}>
+      <header
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+        }}
+      >
+        <Logo />
+        <Heading as="h1" sx={{ fontSize: 7 }}>
+          Project Dusk
+        </Heading>
       </header>
-    </div>
-  )
-}
+    </ThemeProvider>
+  </Auth0Provider>
+);
 
-export default App
+export default App;
