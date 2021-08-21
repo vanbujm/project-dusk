@@ -24,6 +24,7 @@ const App = () => (
         <Heading as="h1" sx={{ fontSize: 7 }}>
           Project Dusk
         </Heading>
+        <Heading as="h2">Coming soon...</Heading>
       </header>
     </ThemeProvider>
   </Auth0Provider>
