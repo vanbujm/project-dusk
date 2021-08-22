@@ -3,6 +3,7 @@ import React from 'react';
 import { Heading, ThemeProvider } from 'theme-ui';
 import { theme } from './theme';
 import { Logo } from './Logo';
+import { FadeInText } from './FadeInText';
 
 const App = () => (
   <Auth0Provider
@@ -24,7 +25,9 @@ const App = () => (
         <Heading as="h1" sx={{ fontSize: 7 }}>
           Project Dusk
         </Heading>
-        <Heading as="h2">Coming soon...</Heading>
+        <Heading as="h2">
+          <FadeInText>Coming soon...</FadeInText>
+        </Heading>
       </header>
     </ThemeProvider>
   </Auth0Provider>
