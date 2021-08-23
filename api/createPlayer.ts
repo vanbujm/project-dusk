@@ -20,7 +20,7 @@ const jwtCheck = jwt({
 
 const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   const results = await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
-  res.status(200).json(results);
+  res.status(200).json(JSON.stringify(results));
 };
 
 export default cors(createPlayer);

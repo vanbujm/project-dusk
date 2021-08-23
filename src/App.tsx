@@ -11,6 +11,8 @@ const App = () => (
     domain="dev-zah-ux2d.us.auth0.com"
     clientId="4yMX6dqD1oA1neSRXsvltagqXJ8DGuJQ"
     redirectUri={window.location.origin}
+    audient={'https://project-dusk.vercel.app/api'}
+    scope={'read:all'}
   >
     <ThemeProvider theme={theme}>
       <header
