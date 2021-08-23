@@ -1,9 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import jwt from 'express-jwt';
-import jwks from 'jwks-rsa';
-
-console.log(require('express-jwt'), require('jwks-rsa'));
-console.log(jwt, jwks);
+const jwt = require('express-jwt');
+const jwks = require('jwks-rsa');
 
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
