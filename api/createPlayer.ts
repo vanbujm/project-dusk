@@ -20,6 +20,7 @@ const jwtCheck = jwt({
 
 const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
+  // @ts-ignore
   console.log(req.user);
   console.log('--------------------------');
   console.log(req);
