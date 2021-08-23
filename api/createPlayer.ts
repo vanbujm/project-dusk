@@ -2,6 +2,9 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
+const microCors = require('micro-cors');
+
+const cors = microCors();
 
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
@@ -20,4 +23,4 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   res.status(200).json(results);
 };
 
-export default createPlayer;
+export default cors(createPlayer);

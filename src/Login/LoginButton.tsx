@@ -9,7 +9,6 @@ export const LoginButton = () => {
     const response = await fetch('https://project-dusk.vercel.app/api/createPlayer', {
       mode: 'cors',
       headers: {
-        'Access-Control-Allow-Origin': '*',
         Authorization: token,
       },
     });
