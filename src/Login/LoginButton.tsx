@@ -2,7 +2,8 @@ import React, { useCallback } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const LoginButton = () => {
-  const { loginWithRedirect, isAuthenticated, getAccessTokenSilently, logout, getAccessTokenWithPopup } = useAuth0();
+  const { loginWithRedirect, isAuthenticated, getAccessTokenSilently, logout, getAccessTokenWithPopup, user } =
+    useAuth0();
 
   const createPlayer = useCallback(async () => {
     let token;
@@ -24,9 +25,12 @@ export const LoginButton = () => {
     try {
       const response = await fetch('https://project-dusk.vercel.app/api/createPlayer', {
         mode: 'cors',
+        method: 'post',
         headers: {
+          'Content-Type': 'Application/json',
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify(user),
       });
       console.log(response);
       const data = await response.json();
@@ -38,7 +42,7 @@ export const LoginButton = () => {
 
   if (isAuthenticated) {
     createPlayer();
-    return <button onClick={logout}>Log Out</button>;
+    return <button onClick={logout as any}>Log Out</button>;
   }
 
   return <button onClick={loginWithRedirect}>Log In</button>;
