@@ -65,16 +65,24 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       email: req.body.email,
     },
   };
-  const getPlayerResponse = await makePromise(execute(link, getPlayer));
-  console.log(getPlayerResponse);
-  if (getPlayerResponse && getPlayerResponse.data && getPlayerResponse.data.player) {
-    return res.status(200).json(getPlayerResponse.data.player);
+  try {
+    const getPlayerResponse = await makePromise(execute(link, getPlayer));
+    if (getPlayerResponse && getPlayerResponse.data && getPlayerResponse.data.player) {
+      return res.status(200).json(getPlayerResponse.data.player);
+    }
+  } catch (e) {
+    res.status(e.statusCode).json(e);
   }
 
   const newPlayer = {
     query: gql`
       mutation newPlayer($email: String!) {
         createPlayer(data: { email: $email }) {
+          id
+          email
+        }
+
+        publishPlayer(where: { email: $email }) {
           id
           email
         }
@@ -87,9 +95,9 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   // For single execution operations, a Promise can be used
   try {
     const data = await makePromise(execute(link, newPlayer));
-    res.status(200).json(data);
+    res.status(200).json(data.publishPlayer);
   } catch (e) {
-    res.status(500).json(e);
+    res.status(e.statusCode).json(e);
   }
 };
 
