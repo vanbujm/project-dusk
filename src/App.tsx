@@ -4,6 +4,7 @@ import { Heading, ThemeProvider } from 'theme-ui';
 import { theme } from './theme';
 import { Logo } from './Logo';
 import { FadeInText } from './FadeInText';
+import { LoginButton } from './Login/LoginButton';
 
 const App = () => (
   <Auth0Provider
@@ -28,6 +29,7 @@ const App = () => (
         <Heading as="h2">
           <FadeInText>Coming soon...</FadeInText>
         </Heading>
+        <LoginButton />
       </header>
     </ThemeProvider>
   </Auth0Provider>

@@ -10,6 +10,8 @@
     "@auth0/auth0-react": "^1.6.0",
     "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.4.1",
+    "express-jwt": "^6.1.0",
+    "jwks-rsa": "^2.0.4",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "theme-ui": "^0.10.0"
