@@ -85,8 +85,12 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
     },
   };
   // For single execution operations, a Promise can be used
-  const data = await makePromise(execute(link, newPlayer));
-  res.status(200).json(data);
+  try {
+    const data = await makePromise(execute(link, newPlayer));
+    res.status(200).json(data);
+  } catch (e) {
+    res.status(500).json(e);
+  }
 };
 
 export default cors(createPlayer);
