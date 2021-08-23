@@ -66,7 +66,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
     },
   };
   const getPlayerResponse = await makePromise(execute(link, getPlayer));
-
+  console.log(getPlayerResponse);
   if (getPlayerResponse && getPlayerResponse.data && getPlayerResponse.data.player) {
     return res.status(200).json(getPlayerResponse.data.player);
   }
