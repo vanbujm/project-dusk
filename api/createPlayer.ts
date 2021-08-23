@@ -8,6 +8,11 @@ const { execute, makePromise } = require('apollo-link');
 const { createHttpLink } = require('apollo-link-http');
 const gql = require('graphql-tag');
 
+console.log({
+  GRAPH_CMS_CONTENT_API: process.env.GRAPH_CMS_CONTENT_API,
+  GRAPH_CMS_API_TOKEN: process.env.GRAPH_CMS_API_TOKEN,
+});
+
 const cors = microCors();
 const uri = process.env.GRAPH_CMS_CONTENT_API;
 const link = createHttpLink({
