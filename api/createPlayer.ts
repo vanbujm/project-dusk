@@ -48,6 +48,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   if (!user || !user.aud.includes('https://project-dusk.vercel.app/api')) {
     return res.status(401);
   }
+  console.log(user);
   if (!req.body.email) {
     return res.status(400).send({ error: { message: 'No email' } });
   }
@@ -71,6 +72,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       return res.status(200).json(getPlayerResponse.data.player);
     }
   } catch (e) {
+    console.error(e);
     res.status(e.statusCode).json(e);
   }
 
@@ -109,6 +111,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
     );
     res.status(200).json(data.publishPlayer);
   } catch (e) {
+    console.error(e);
     res.status(e.statusCode).json(e);
   }
 };
