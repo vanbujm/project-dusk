@@ -54,7 +54,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   const getUserInfo = await fetch(`${issuer}userinfo`, {
     headers: {
       'Content-Type': 'Application/json',
-      Authorization: `Bearer ${req.headers.authorization}`,
+      Authorization: req.headers.authorization,
     },
   });
   console.log(getUserInfo);
