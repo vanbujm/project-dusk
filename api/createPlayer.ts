@@ -48,23 +48,23 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   if (!user || !user.aud.includes('https://project-dusk.vercel.app/api')) {
     res.status(401);
   } else {
-    console.log(req.body);
     const operation = {
       query: gql`
-          mutation {
-              createPlayer(data:{
-                  email: ${req.body.email}
-              }){
-                  id
-                  email
-              }
+        mutation newPlayer($email: String!) {
+          createPlayer(data: { email: $email }) {
+            id
+            email
           }
+        }
       `,
-      // variables: {}, //optional
+      variables: {
+        email: req.body.email,
+      },
     };
     console.log(operation);
     // For single execution operations, a Promise can be used
-    // const data = await makePromise(execute(link, operation));
+    const data = await makePromise(execute(link, operation));
+    console.log(data);
     res.status(200).json({});
   }
 };
