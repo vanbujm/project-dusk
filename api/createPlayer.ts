@@ -18,6 +18,8 @@ const link = createHttpLink({
   },
 });
 
+const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
+
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
     cache: true,
@@ -26,7 +28,7 @@ const jwtCheck = jwt({
     jwksUri: 'https://dev-zah-ux2d.us.auth0.com/.well-known/jwks.json',
   }),
   audience: 'https://project-dusk.vercel.app/api',
-  issuer: 'https://dev-zah-ux2d.us.auth0.com/',
+  issuer,
   algorithms: ['RS256'],
 });
 
@@ -48,7 +50,15 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   if (!user || !user.aud.includes('https://project-dusk.vercel.app/api')) {
     return res.status(401);
   }
-  console.log(user);
+
+  const getUserInfo = await fetch(`${issuer}userinfo`, {
+    headers: {
+      'Content-Type': 'Application/json',
+      Authorization: `Bearer ${req.headers.authorization}`,
+    },
+  });
+  console.log(getUserInfo);
+
   if (!req.body.email) {
     return res.status(400).send({ error: { message: 'No email' } });
   }

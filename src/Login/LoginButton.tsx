@@ -27,12 +27,10 @@ export const LoginButton = () => {
       try {
         const response = await fetch('https://project-dusk.vercel.app/api/createPlayer', {
           mode: 'cors',
-          method: 'POST',
           headers: {
             'Content-Type': 'Application/json',
             Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify(user),
         });
         console.log(response);
         const data = await response.json();
