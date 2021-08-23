@@ -57,7 +57,8 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       Authorization: req.headers.authorization,
     },
   });
-  console.log(getUserInfo);
+  const getUserInfoData = await getUserInfo.json();
+  console.log(getUserInfoData);
 
   if (!req.body.email) {
     return res.status(400).send({ error: { message: 'No email' } });
