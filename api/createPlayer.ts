@@ -57,10 +57,9 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       Authorization: req.headers.authorization,
     },
   });
-  const getUserInfoData = await getUserInfo.json();
-  console.log(getUserInfoData);
+  const { email } = await getUserInfo.json();
 
-  if (!req.body.email) {
+  if (!email) {
     return res.status(400).send({ error: { message: 'No email' } });
   }
 
@@ -74,7 +73,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       }
     `,
     variables: {
-      email: req.body.email,
+      email,
     },
   };
   try {
@@ -100,7 +99,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
           }
         `,
         variables: {
-          email: req.body.email,
+          email,
         },
       })
     );
@@ -116,7 +115,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
           }
         `,
         variables: {
-          email: req.body.email,
+          email,
         },
       })
     );
