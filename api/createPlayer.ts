@@ -23,7 +23,7 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   // @ts-ignore
   console.log(req.user);
   console.log('--------------------------');
-  console.log(req);
+  // console.log(req);
   res.status(200).json({});
 };
 
