@@ -46,27 +46,30 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
   await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
   const user = (req as VerifiedRequest).user;
   if (!user || !user.aud.includes('https://project-dusk.vercel.app/api')) {
-    res.status(401);
-  } else {
-    const operation = {
-      query: gql`
-        mutation newPlayer($email: String!) {
-          createPlayer(data: { email: $email }) {
-            id
-            email
-          }
-        }
-      `,
-      variables: {
-        email: req.body.email,
-      },
-    };
-    console.log(operation);
-    // For single execution operations, a Promise can be used
-    const data = await makePromise(execute(link, operation));
-    console.log(data);
-    res.status(200).json({});
+    return res.status(401);
   }
+  if (!req.body.email) {
+    console.log(req.body);
+    return res.status(400).send({ error: { message: 'No email' } });
+  }
+  const operation = {
+    query: gql`
+      mutation newPlayer($email: String!) {
+        createPlayer(data: { email: $email }) {
+          id
+          email
+        }
+      }
+    `,
+    variables: {
+      email: req.body.email,
+    },
+  };
+  console.log(operation);
+  // For single execution operations, a Promise can be used
+  const data = await makePromise(execute(link, operation));
+  console.log(data);
+  res.status(200).json({});
 };
 
 export default cors(createPlayer);
