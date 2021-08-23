@@ -2,6 +2,9 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 
+console.log(require('express-jwt'), require('jwks-rsa'));
+console.log(jwt, jwks);
+
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
     cache: true,
@@ -15,8 +18,6 @@ const jwtCheck = jwt({
 });
 
 const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
-  console.log(require('express-jwt'), require('jwks-rsa'));
-  console.log(jwt, jwks);
   const results = await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
   res.status(200).json(results);
 };
