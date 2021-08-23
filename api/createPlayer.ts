@@ -8,11 +8,6 @@ const { execute, makePromise } = require('apollo-link');
 const { createHttpLink } = require('apollo-link-http');
 const gql = require('graphql-tag');
 
-console.log({
-  GRAPH_CMS_CONTENT_API: process.env.GRAPH_CMS_CONTENT_API,
-  GRAPH_CMS_API_TOKEN: process.env.GRAPH_CMS_API_TOKEN,
-});
-
 const cors = microCors();
 const uri = process.env.GRAPH_CMS_CONTENT_API;
 const link = createHttpLink({
@@ -67,9 +62,10 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       `,
       // variables: {}, //optional
     };
+    console.log(operation);
     // For single execution operations, a Promise can be used
-    const data = await makePromise(execute(link, operation));
-    res.status(200).json(data);
+    // const data = await makePromise(execute(link, operation));
+    res.status(200).json({});
   }
 };
 
