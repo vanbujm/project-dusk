@@ -49,10 +49,29 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
     return res.status(401);
   }
   if (!req.body.email) {
-    console.log(req.body);
     return res.status(400).send({ error: { message: 'No email' } });
   }
-  const operation = {
+
+  const getPlayer = {
+    query: gql`
+      query getPlayer($email: String!) {
+        player(where: { email: $email }) {
+          id
+          email
+        }
+      }
+    `,
+    variables: {
+      email: req.body.email,
+    },
+  };
+  const getPlayerResponse = await makePromise(execute(link, getPlayer));
+
+  if (getPlayerResponse && getPlayerResponse.data && getPlayerResponse.data.player) {
+    return res.status(200).json(getPlayerResponse.data.player);
+  }
+
+  const newPlayer = {
     query: gql`
       mutation newPlayer($email: String!) {
         createPlayer(data: { email: $email }) {
@@ -65,11 +84,9 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
       email: req.body.email,
     },
   };
-  console.log(operation);
   // For single execution operations, a Promise can be used
-  const data = await makePromise(execute(link, operation));
-  console.log(data);
-  res.status(200).json({});
+  const data = await makePromise(execute(link, newPlayer));
+  res.status(200).json(data);
 };
 
 export default cors(createPlayer);
