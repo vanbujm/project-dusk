@@ -74,27 +74,39 @@ const createPlayer = async (req: VercelRequest, res: VercelResponse) => {
     res.status(e.statusCode).json(e);
   }
 
-  const newPlayer = {
-    query: gql`
-      mutation newPlayer($email: String!) {
-        createPlayer(data: { email: $email }) {
-          id
-          email
-        }
-
-        publishPlayer(where: { email: $email }) {
-          id
-          email
-        }
-      }
-    `,
-    variables: {
-      email: req.body.email,
-    },
-  };
   // For single execution operations, a Promise can be used
   try {
-    const data = await makePromise(execute(link, newPlayer));
+    await makePromise(
+      execute(link, {
+        query: gql`
+          mutation newPlayer($email: String!) {
+            createPlayer(data: { email: $email }) {
+              id
+              email
+            }
+          }
+        `,
+        variables: {
+          email: req.body.email,
+        },
+      })
+    );
+
+    const data = await makePromise(
+      execute(link, {
+        query: gql`
+          mutation newPlayer($email: String!) {
+            publishPlayer(where: { email: $email }) {
+              id
+              email
+            }
+          }
+        `,
+        variables: {
+          email: req.body.email,
+        },
+      })
+    );
     res.status(200).json(data.publishPlayer);
   } catch (e) {
     res.status(e.statusCode).json(e);
