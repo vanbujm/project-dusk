@@ -55,16 +55,16 @@ const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
       Authorization: req.headers.authorization,
     },
   });
-  const user = await getUserInfo.json();
+  const userInfo = await getUserInfo.json();
 
-  if (!user.email) {
+  if (!userInfo.email) {
     return res.status(400).send({ error: { message: 'No email' } });
   }
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async () => ({ user }),
+    context: async () => ({ user: userInfo }),
   });
 
   await server.start();
