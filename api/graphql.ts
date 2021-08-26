@@ -35,6 +35,10 @@ type VerifiedRequest =
     } & VercelRequest;
 
 const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
   const user = (req as VerifiedRequest).user;
   console.log('user', user);

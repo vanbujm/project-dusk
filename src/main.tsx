@@ -4,10 +4,19 @@ import App from './App';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { theme } from './theme';
 import { ThemeProvider } from 'theme-ui';
+import { useAuthenticatedApolloClient } from './graphqlClient';
 import { ApolloProvider } from '@apollo/client';
-import { client } from './graphqlClient';
 
-ReactDOM.render(
+const AuthWrapper = () => {
+  const client = useAuthenticatedApolloClient();
+  return (
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  );
+};
+
+const Wrapper = () => (
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Auth0Provider
@@ -17,11 +26,10 @@ ReactDOM.render(
         audient={'https://project-dusk.vercel.app/api'}
         scope={'read:all'}
       >
-        <ApolloProvider client={client}>
-          <App />
-        </ApolloProvider>
+        <AuthWrapper />
       </Auth0Provider>
     </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
+
+ReactDOM.render(<Wrapper />, document.getElementById('root'));

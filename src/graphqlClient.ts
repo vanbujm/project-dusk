@@ -1,6 +1,32 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { useAuthWithAutoLogin } from './hooks/auth';
+import { useMemo } from 'react';
 
-export const client = new ApolloClient({
-  uri: 'https://api-ap-northeast-1.graphcms.com/v2/cksmy62k0109g01yuenvlba3g/master',
-  cache: new InMemoryCache(),
+const httpLink = createHttpLink({
+  uri: 'https://project-dusk.vercel.app/api/graphql',
 });
+
+export const useAuthenticatedApolloClient = () => {
+  const { authToken } = useAuthWithAutoLogin();
+
+  const authLink = useMemo(
+    () =>
+      setContext((_, { headers }) => ({
+        headers: {
+          ...headers,
+          authorization: authToken ? `Bearer ${authToken}` : '',
+        },
+      })),
+    [authToken]
+  );
+
+  return useMemo(
+    () =>
+      new ApolloClient({
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache(),
+      }),
+    [authLink]
+  );
+};

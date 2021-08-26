@@ -15,7 +15,7 @@ const GET_INTRO_NARRATION = gql`
 `;
 
 const App = () => {
-  const { loading, error, data } = useQuery(GET_INTRO_NARRATION);
+  const { loading, data } = useQuery(GET_INTRO_NARRATION);
 
   const loadingText = <FadeInText>Loading...</FadeInText>;
   const narrationText = (
