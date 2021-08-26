@@ -70,6 +70,7 @@ const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
   await server.start();
   console.log('server started');
   const handler = server.createHandler();
+  console.log('handler', handler);
   return handler(req, res);
 };
 
