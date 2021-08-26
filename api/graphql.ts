@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { VercelRequest, VercelResponse } from '@vercel/node';
+const { ApolloServer } = require('apollo-server-micro');
+const { typeDefs } = require('./typeDefs');
+const { resolvers } = require('./resolvers');
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const microCors = require('micro-cors');
 const fetch = require('cross-fetch');
-const server = require('../graphql/server');
 
 const cors = microCors();
 
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
+
+const server = new ApolloServer({ typeDefs, resolvers });
 
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
