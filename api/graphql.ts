@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { VercelRequest, VercelResponse } from '@vercel/node';
+
 const { ApolloServer } = require('apollo-server-micro');
 const { typeDefs } = require('../graphql/typeDefs');
 const { resolvers } = require('../graphql/resolvers');
 const jwt = require('jsonwebtoken');
 const jwks = require('jwks-rsa');
 const fetch = require('cross-fetch');
-
+const cors = require('micro-cors')();
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 
 const getSecret = jwks.expressJwtSecret({
@@ -15,7 +17,7 @@ const getSecret = jwks.expressJwtSecret({
   jwksUri: 'https://dev-zah-ux2d.us.auth0.com/.well-known/jwks.json',
 });
 
-const server = new ApolloServer({
+const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }: any) => {
@@ -49,4 +51,9 @@ const server = new ApolloServer({
   },
 });
 
-export default server;
+export default apolloServer.start().then(() => {
+  const handler = apolloServer.createHandler();
+  return cors((req: VercelRequest, res: VercelResponse) =>
+    req.method === 'OPTIONS' ? res.send('ok') : handler(req, res)
+  );
+});
