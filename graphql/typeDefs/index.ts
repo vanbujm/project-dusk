@@ -47,12 +47,7 @@ export const typeDefs = gql`
     name: String
   }
 
-  input PlayerClassUniqueInput {
-    player: PlayerUniqueInput!
-    class: ClassUniqueInput!
-  }
-
   type Query {
-    narrations(where: PlayerClassUniqueInput): [Narration!]!
+    narrations(where: ClassUniqueInput): [Narration!]!
   }
 `;

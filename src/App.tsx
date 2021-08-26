@@ -7,7 +7,7 @@ import { gql, useQuery } from '@apollo/client';
 
 const GET_INTRO_NARRATION = gql`
   query GetIntroNarration {
-    narrations(where: { class: { name: "test" }, player: { name: "test" } }) {
+    narrations(where: { name: "test" }) {
       id
       text
     }

@@ -52,11 +52,6 @@ export type Player = {
   answeredQuestions: Array<Narration>;
 };
 
-export type PlayerClassUniqueInput = {
-  player: PlayerUniqueInput;
-  class: ClassUniqueInput;
-};
-
 export type PlayerUniqueInput = {
   id?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
@@ -69,7 +64,7 @@ export type Query = {
 };
 
 export type QueryNarrationsArgs = {
-  where?: Maybe<PlayerClassUniqueInput>;
+  where?: Maybe<ClassUniqueInput>;
 };
 
 export type GetIntroNarrationQueryVariables = Exact<{ [key: string]: never }>;
@@ -81,7 +76,7 @@ export type GetIntroNarrationQuery = {
 
 export const GetIntroNarrationDocument = gql`
   query GetIntroNarration {
-    narrations(where: { class: { name: "test" }, player: { name: "test" } }) {
+    narrations(where: { name: "test" }) {
       id
       text
     }

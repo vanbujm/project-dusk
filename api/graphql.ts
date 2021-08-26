@@ -12,8 +12,6 @@ const cors = microCors();
 
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 
-const server = new ApolloServer({ typeDefs, resolvers });
-
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
     cache: true,
@@ -57,11 +55,17 @@ const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
       Authorization: req.headers.authorization,
     },
   });
-  const { email } = await getUserInfo.json();
+  const user = await getUserInfo.json();
 
-  if (!email) {
+  if (!user.email) {
     return res.status(400).send({ error: { message: 'No email' } });
   }
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async () => ({ user }),
+  });
 
   await server.start();
   console.log('server started');
