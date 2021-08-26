@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { ApolloServer } = require('apollo-server-micro');
-const typeDefs = require('./typeDefs');
-const resolvers = require('./resolvers');
+const { typeDefs } = require('./typeDefs');
+const { resolvers } = require('./resolvers');
 
 let server;
 

@@ -4,7 +4,7 @@ const { getPrismaClient } = require('../../lib/prisma');
 
 const client = getPrismaClient();
 
-const resolvers = {
+export const resolvers = {
   Query: {
     narrations: ({ player, class: classInput }: PlayerClassUniqueInput) => {
       client.narration.findMany({
@@ -13,5 +13,3 @@ const resolvers = {
     },
   },
 };
-
-export default resolvers;

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { gql } = require('apollo-server-micro');
 
-export default gql`
+export const typeDefs = gql`
   type Answer {
     id: ID!
     text: String!
