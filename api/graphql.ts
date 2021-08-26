@@ -37,9 +37,12 @@ type VerifiedRequest =
 const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
   await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
   const user = (req as VerifiedRequest).user;
+  console.log('user', user);
   if (!user || !user.aud.includes('https://project-dusk.vercel.app/api')) {
     return res.status(401);
   }
+
+  console.log('fetching userinfo');
 
   const getUserInfo = await fetch(`${issuer}userinfo`, {
     headers: {

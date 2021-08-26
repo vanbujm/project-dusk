@@ -6,6 +6,7 @@ const { resolvers } = require('./resolvers');
 let server;
 
 if (!server) {
+  console.log('creating apollo server...');
   server = new ApolloServer({ typeDefs, resolvers });
 }
 

@@ -8,10 +8,9 @@ const client = getPrismaClient();
 
 export const resolvers = {
   Query: {
-    narrations: ({ player, class: classInput }: PlayerClassUniqueInput) => {
+    narrations: ({ player, class: classInput }: PlayerClassUniqueInput) =>
       client.narration.findMany({
         where: { AND: [{ classes: { every: { ...classInput, player: { every: { ...player } } } } }] },
-      });
-    },
+      }),
   },
 };
