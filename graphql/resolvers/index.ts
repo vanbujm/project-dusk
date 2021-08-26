@@ -2,6 +2,8 @@
 import { PlayerClassUniqueInput } from '../../generated/graphql';
 const { getPrismaClient } = require('../../lib/prisma');
 
+console.log('getPrismaClient');
+
 const client = getPrismaClient();
 
 export const resolvers = {
