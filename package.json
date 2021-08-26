@@ -21,6 +21,7 @@
     "express-jwt": "^6.1.0",
     "graphql": "^15.5.1",
     "graphql-tag": "^2.12.5",
+    "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.0.4",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
