@@ -41,7 +41,6 @@ const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
 
   await new Promise((resolve) => jwtCheck(req as any, res as any, resolve));
   const user = (req as VerifiedRequest).user;
-  console.log('user', user);
   if (!user || !user.aud.includes('https://project-dusk.vercel.app/api')) {
     return res.status(401);
   }
@@ -56,12 +55,11 @@ const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
   });
   const { email } = await getUserInfo.json();
 
-  console.log('email', email);
-
   if (!email) {
     return res.status(400).send({ error: { message: 'No email' } });
   }
 
+  console.log('server', server);
   const handler = server.createHandler();
   console.log('handler', handler);
   return handler(req, res);
