@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { VercelRequest, VercelResponse } from '@vercel/node';
 const { ApolloServer } = require('apollo-server-micro');
-const { typeDefs } = require('./typeDefs');
-const { resolvers } = require('./resolvers');
+const { typeDefs } = require('../graphql/typeDefs');
+const { resolvers } = require('../graphql/resolvers');
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const microCors = require('micro-cors');
