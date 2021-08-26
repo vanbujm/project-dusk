@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["@emotion/react/types/css-prop"],
+    "types": ["@emotion/react/types/css-prop", "node"],
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "preserve",
