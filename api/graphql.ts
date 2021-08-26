@@ -62,8 +62,6 @@ const graphqlServer = async (req: VercelRequest, res: VercelResponse) => {
     return res.status(400).send({ error: { message: 'No email' } });
   }
 
-  await server.start();
-  console.log('server started');
   const handler = server.createHandler();
   console.log('handler', handler);
   return handler(req, res);
