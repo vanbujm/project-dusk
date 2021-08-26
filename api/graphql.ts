@@ -4,7 +4,7 @@ const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const microCors = require('micro-cors');
 const fetch = require('cross-fetch');
-const server = require('./server');
+const server = require('../graphql/server');
 
 const cors = microCors();
 
