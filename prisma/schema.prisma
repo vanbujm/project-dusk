@@ -1,0 +1,86 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Answer {
+  id   String @id @default(uuid())
+  text String @unique
+
+  question Narration @relation(fields: [narrationId], references: [id])
+
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  narrationId String
+}
+
+model Narration {
+  id   String @id @default(uuid())
+  text String @unique
+
+  answer Answer?
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  classes Class[]
+
+  answeredQuestionsOnPlayer AnsweredQuestionsOnPlayer[]
+  seenNarrationsOnPlayer    SeenNarrationsOnPlayer[]
+}
+
+model Class {
+  id   String @id @default(uuid())
+  name String @unique
+
+  sequence Narration[]
+  player   Player[]
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+}
+
+model AnsweredQuestionsOnPlayer {
+  question   Narration @relation(fields: [questionId], references: [id])
+  questionId String
+
+  player   Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@unique([playerId, questionId])
+}
+
+model SeenNarrationsOnPlayer {
+  question   Narration @relation(fields: [questionId], references: [id])
+  questionId String
+
+  player   Player @relation(fields: [playerId], references: [id])
+  playerId String
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@unique([playerId, questionId])
+}
+
+model Player {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String @unique
+
+  class Class @relation(fields: [classId], references: [id])
+
+  seenNarrations    SeenNarrationsOnPlayer[]
+  answeredQuestions AnsweredQuestionsOnPlayer[]
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  classId   String
+}

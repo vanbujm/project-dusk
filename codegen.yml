@@ -1,0 +1,17 @@
+overwrite: true
+schema: "./api/**/*.ts"
+documents: "./src/**/*.tsx"
+generates:
+  generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+#      - "typescript-graphql-files-modules"
+      - "fragment-matcher"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"
+hooks:
+  afterAllFileWrite:
+    - prettier --write
