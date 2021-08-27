@@ -17,24 +17,22 @@ let client = jwks({
   jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
 });
 
-client.getKeys().then((keys: any) => console.log('keys', keys));
-
-function getKey(header: any, callback: any) {
-  console.log('getKey header', header);
-  if (!client) {
-    client = jwks({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
-    });
-  }
-  client.getSigningKey(header.kid, function (err: any, key: { publicKey: any; rsaPublicKey: any }) {
-    console.log('getSigningKey', key);
-    const signingKey = key.publicKey || key.rsaPublicKey;
-    callback(null, signingKey);
-  });
-}
+// function getKey(header: any, callback: any) {
+//   console.log('getKey header', header);
+//   if (!client) {
+//     client = jwks({
+//       cache: true,
+//       rateLimit: true,
+//       jwksRequestsPerMinute: 5,
+//       jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
+//     });
+//   }
+//   client.getSigningKey(header.kid, function (err: any, key: { publicKey: any; rsaPublicKey: any }) {
+//     console.log('getSigningKey', key);
+//     const signingKey = key.publicKey || key.rsaPublicKey;
+//     callback(null, signingKey);
+//   });
+// }
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -43,11 +41,10 @@ const apolloServer = new ApolloServer({
   introspection: true,
   context: async ({ req }: any) => {
     try {
-      console.log('authorization', req.headers.authorization);
       console.log('resolving context');
       const decoded = req.headers.authorization ? jwt.decode(req.headers.authorization, { complete: true }) : {};
       console.log('headers', JSON.stringify(decoded).substr(0, 200));
-      const test = await client.getSigningKey(decoded.header.kid);
+      const test = await client.getSigningKey(decoded?.header?.kid);
 
       console.log('getSigningKey', test);
 
