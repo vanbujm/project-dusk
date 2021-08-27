@@ -61,7 +61,7 @@ const apolloServer = new ApolloServer({
 export default apolloServer.start().then(() => {
   const handler = apolloServer.createHandler();
   return cors((req: VercelRequest, res: VercelResponse) => {
-    console.log('processing req', req);
+    console.log('processing req', req.headers, req.body, req.method);
     return req.method === 'OPTIONS' ? res.send('ok') : handler(req, res);
   });
 });
