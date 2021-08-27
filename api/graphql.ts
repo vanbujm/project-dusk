@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable */
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 const { ApolloServer } = require('apollo-server-micro');
@@ -17,14 +17,14 @@ const client = jwks({
   jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
 });
 
-const getKey = (header: any, callback: any) => {
+function getKey(header: any, callback: any) {
   console.error('getKey header', header);
-  client.getSigningKey(header.kid, (err: any, key: { publicKey: any; rsaPublicKey: any }) => {
+  client.getSigningKey(header.kid, function (err: any, key: { publicKey: any; rsaPublicKey: any }) {
     console.error('getSigningKey', key);
     const signingKey = key.publicKey || key.rsaPublicKey;
     callback(null, signingKey);
   });
-};
+}
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -42,7 +42,7 @@ const apolloServer = new ApolloServer({
           audience: 'https://project-dusk.vercel.app/api',
           algorithms: ['RS256'],
         },
-        (err: any, decoded: unknown) => {
+        function (err: any, decoded: unknown) {
           if (err) {
             console.error('Authorization Error: ', err);
             reject(err);
