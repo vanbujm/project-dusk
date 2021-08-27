@@ -18,9 +18,9 @@ const client = jwks({
 });
 
 function getKey(header: any, callback: any) {
-  console.error('getKey header', header);
+  console.log('getKey header', header);
   client.getSigningKey(header.kid, function (err: any, key: { publicKey: any; rsaPublicKey: any }) {
-    console.error('getSigningKey', key);
+    console.log('getSigningKey', key);
     const signingKey = key.publicKey || key.rsaPublicKey;
     callback(null, signingKey);
   });
@@ -32,48 +32,53 @@ const apolloServer = new ApolloServer({
   playground: true,
   introspection: true,
   context: async ({ req }: any) => {
-    console.error('resolving context');
-    const secret = await new Promise((resolve, reject) =>
-      jwt.verify(
-        req.headers.authorization,
-        getKey,
-        {
-          issuer,
-          audience: 'https://project-dusk.vercel.app/api',
-          algorithms: ['RS256'],
-        },
-        function (err: any, decoded: unknown) {
-          if (err) {
-            console.error('Authorization Error: ', err);
-            reject(err);
-          } else {
-            resolve(decoded);
+    try {
+      console.log('resolving context');
+      const secret = await new Promise((resolve, reject) =>
+        jwt.verify(
+          req.headers.authorization,
+          getKey,
+          {
+            issuer,
+            audience: 'https://project-dusk.vercel.app/api',
+            algorithms: ['RS256'],
+          },
+          function (err: any, decoded: unknown) {
+            if (err) {
+              console.error('Authorization Error: ', err);
+              reject(err);
+            } else {
+              resolve(decoded);
+            }
           }
-        }
-      )
-    );
+        )
+      );
 
-    console.error('secret', secret);
+      console.log('secret', secret);
 
-    const isValid = jwt.verify(req.headers.authorization, secret, {
-      issuer,
-      audience: 'https://project-dusk.vercel.app/api',
-      algorithms: ['RS256'],
-    });
+      const isValid = jwt.verify(req.headers.authorization, secret, {
+        issuer,
+        audience: 'https://project-dusk.vercel.app/api',
+        algorithms: ['RS256'],
+      });
 
-    console.error(isValid);
-    if (!isValid) {
-      console.error('invalid token');
+      console.log('isValid', isValid);
+      if (!isValid) {
+        console.error('invalid token');
+        return {};
+      }
+      const getUserInfo = await fetch(`${issuer}userinfo`, {
+        headers: {
+          'Content-Type': 'Application/json',
+          Authorization: req.headers.authorization,
+        },
+      });
+      const userInfo = await getUserInfo.json();
+      return { user: userInfo };
+    } catch (e) {
+      console.error('context error', e);
       return {};
     }
-    const getUserInfo = await fetch(`${issuer}userinfo`, {
-      headers: {
-        'Content-Type': 'Application/json',
-        Authorization: req.headers.authorization,
-      },
-    });
-    const userInfo = await getUserInfo.json();
-    return { user: userInfo };
   },
 });
 
@@ -85,4 +90,4 @@ export default apolloServer
       req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res)
     );
   })
-  .catch((err: any) => console.error(err));
+  .catch((err: any) => console.error('app error: ', err));
