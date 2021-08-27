@@ -10,12 +10,19 @@ const fetch = require('cross-fetch');
 const cors = require('micro-cors')();
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 
-const getSecret = jwks.expressJwtSecret({
+const client = jwks({
   cache: true,
   rateLimit: true,
   jwksRequestsPerMinute: 5,
-  jwksUri: 'https://dev-zah-ux2d.us.auth0.com/.well-known/jwks.json',
+  jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
 });
+
+const getKey = (header: any, callback: any) => {
+  client.getSigningKey(header.kid, (err: any, key: { publicKey: any; rsaPublicKey: any }) => {
+    const signingKey = key.publicKey || key.rsaPublicKey;
+    callback(null, signingKey);
+  });
+};
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -25,14 +32,23 @@ const apolloServer = new ApolloServer({
   context: async ({ req }: any) => {
     console.log('resolving context');
     const secret = await new Promise((resolve, reject) =>
-      getSecret(req, jwt.decode(req.headers.authorization), (err?: any, secret?: string) => {
-        if (err) {
-          console.error('Authorization Error: ', err);
-          reject(err);
-        } else {
-          resolve(secret);
+      jwt.verify(
+        req.headers.authorization,
+        getKey,
+        {
+          issuer,
+          audience: 'https://project-dusk.vercel.app/api',
+          algorithms: ['RS256'],
+        },
+        (err: any, decoded: unknown) => {
+          if (err) {
+            console.error('Authorization Error: ', err);
+            reject(err);
+          } else {
+            resolve(decoded);
+          }
         }
-      })
+      )
     );
 
     console.log('secret', secret);
