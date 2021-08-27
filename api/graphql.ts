@@ -59,11 +59,14 @@ const apolloServer = new ApolloServer({
   },
 });
 
-export default apolloServer.start().then(() => {
-  const handler = apolloServer.createHandler({ path: '/api/graphql' });
-  return cors(async (req: VercelRequest, res: VercelResponse) => {
-    const response = req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res);
-    console.log('response', response);
-    return response;
-  });
-});
+export default apolloServer
+  .start()
+  .then(() => {
+    const handler = apolloServer.createHandler({ path: '/api/graphql' });
+    return cors(async (req: VercelRequest, res: VercelResponse) => {
+      const response = req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res);
+      console.log('response', response);
+      return response;
+    });
+  })
+  .catch((err) => console.error(err));
