@@ -24,7 +24,7 @@ const apolloServer = new ApolloServer({
   introspection: true,
   context: async ({ req }: any) => {
     console.log('resolving context');
-    const secret = await new Promise((resolve, reject) => {
+    const secret = await new Promise((resolve, reject) =>
       getSecret(req, req.headers, {}, (err?: any, secret?: string) => {
         if (err) {
           console.error('Authorization Error: ', err);
@@ -32,8 +32,8 @@ const apolloServer = new ApolloServer({
         } else {
           resolve(secret);
         }
-      });
-    });
+      })
+    );
 
     console.log('secret', secret);
 
@@ -63,10 +63,8 @@ export default apolloServer
   .start()
   .then(() => {
     const handler = apolloServer.createHandler({ path: '/api/graphql' });
-    return cors(async (req: VercelRequest, res: VercelResponse) => {
-      const response = req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res);
-      console.log('response', response);
-      return response;
-    });
+    return cors(async (req: VercelRequest, res: VercelResponse) =>
+      req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res)
+    );
   })
   .catch((err: any) => console.error(err));
