@@ -10,7 +10,14 @@ const fetch = require('cross-fetch');
 const cors = require('micro-cors')();
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 
-let client: any;
+let client = jwks({
+  cache: true,
+  rateLimit: true,
+  jwksRequestsPerMinute: 5,
+  jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
+});
+
+client.getKeys().then((keys: any) => console.log('keys', keys));
 
 function getKey(header: any, callback: any) {
   console.log('getKey header', header);
@@ -37,6 +44,11 @@ const apolloServer = new ApolloServer({
   context: async ({ req }: any) => {
     try {
       console.log('resolving context');
+      const headers = req.headers.authorization ? jwt.decode(req.headers.authorization) : {};
+      const test = await client.getSigningKey(headers.kid);
+
+      console.log('getSigningKey', test);
+
       const secret = await new Promise((resolve, reject) =>
         jwt.verify(
           req.headers.authorization,
