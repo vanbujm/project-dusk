@@ -27,7 +27,7 @@ const apolloServer = new ApolloServer({
     const secret = await new Promise((resolve, reject) => {
       getSecret(req, req.headers, {}, (err?: any, secret?: string) => {
         if (err) {
-          console.error(err);
+          console.error('Authorization Error: ', err);
           reject(err);
         } else {
           resolve(secret);
@@ -35,7 +35,7 @@ const apolloServer = new ApolloServer({
       });
     });
 
-    console.log(secret);
+    console.log('secret', secret);
 
     const isValid = jwt.verify(req.headers.authorization, secret, {
       issuer,
@@ -63,7 +63,7 @@ export default apolloServer.start().then(() => {
   const handler = apolloServer.createHandler({ path: '/api/graphql' });
   return cors(async (req: VercelRequest, res: VercelResponse) => {
     const response = req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res);
-    console.log(response);
+    console.log('response', response);
     return response;
   });
 });
