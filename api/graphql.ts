@@ -25,7 +25,7 @@ const apolloServer = new ApolloServer({
   context: async ({ req }: any) => {
     console.log('resolving context');
     const secret = await new Promise((resolve, reject) =>
-      getSecret(req, req.headers, {}, (err?: any, secret?: string) => {
+      getSecret(req, jwt.decode(req.headers.authorization), (err?: any, secret?: string) => {
         if (err) {
           console.error('Authorization Error: ', err);
           reject(err);
