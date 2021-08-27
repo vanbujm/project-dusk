@@ -20,7 +20,10 @@ const getSecret = jwks.expressJwtSecret({
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  playground: true,
+  introspection: true,
   context: async ({ req }: any) => {
+    console.log('resolving context');
     const secret = await new Promise((resolve, reject) => {
       getSecret(req, req.headers, {}, (err?: any, secret?: string) => {
         if (err) {
@@ -31,11 +34,15 @@ const apolloServer = new ApolloServer({
       });
     });
 
+    console.log(secret);
+
     const isValid = jwt.verify(req.headers.authorization, secret, {
       issuer,
       audience: 'https://project-dusk.vercel.app/api',
       algorithms: ['RS256'],
     });
+
+    console.log(isValid);
     if (!isValid) {
       console.log('invalid token');
       return {};
