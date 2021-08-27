@@ -14,7 +14,7 @@ let client = jwks({
   cache: true,
   rateLimit: true,
   jwksRequestsPerMinute: 5,
-  jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
+  jwksUri: 'https://dev-zah-ux2d.us.auth0.com/.well-known/jwks.json',
 });
 
 // function getKey(header: any, callback: any) {
