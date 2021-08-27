@@ -10,15 +10,18 @@ const fetch = require('cross-fetch');
 const cors = require('micro-cors')();
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 
-const client = jwks({
-  cache: true,
-  rateLimit: true,
-  jwksRequestsPerMinute: 5,
-  jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
-});
+let client: any;
 
 function getKey(header: any, callback: any) {
   console.log('getKey header', header);
+  if (!client) {
+    client = jwks({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
+    });
+  }
   client.getSigningKey(header.kid, function (err: any, key: { publicKey: any; rsaPublicKey: any }) {
     console.log('getSigningKey', key);
     const signingKey = key.publicKey || key.rsaPublicKey;
