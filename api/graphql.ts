@@ -43,6 +43,8 @@ const apolloServer = new ApolloServer({
   introspection: true,
   context: async ({ req }: any) => {
     try {
+      console.log('authorization', req.headers.authorization);
+      console.log('Authorization', req.headers.Authorization);
       console.log('resolving context');
       const headers = req.headers.authorization ? jwt.decode(req.headers.authorization) : {};
       console.log('headers', headers);
