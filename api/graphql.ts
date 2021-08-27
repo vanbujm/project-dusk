@@ -27,6 +27,7 @@ const apolloServer = new ApolloServer({
     const secret = await new Promise((resolve, reject) => {
       getSecret(req, req.headers, {}, (err?: any, secret?: string) => {
         if (err) {
+          console.error(err);
           reject(err);
         } else {
           resolve(secret);
@@ -60,8 +61,9 @@ const apolloServer = new ApolloServer({
 
 export default apolloServer.start().then(() => {
   const handler = apolloServer.createHandler({ path: '/api/graphql' });
-  return cors((req: VercelRequest, res: VercelResponse) => {
-    console.log('processing req', req.headers, req.body, req.method);
-    return req.method === 'OPTIONS' ? res.send('ok') : handler(req, res);
+  return cors(async (req: VercelRequest, res: VercelResponse) => {
+    const response = req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res);
+    console.log(response);
+    return response;
   });
 });
