@@ -45,6 +45,7 @@ const apolloServer = new ApolloServer({
     try {
       console.log('resolving context');
       const headers = req.headers.authorization ? jwt.decode(req.headers.authorization) : {};
+      console.log('headers', headers);
       const test = await client.getSigningKey(headers.kid);
 
       console.log('getSigningKey', test);
