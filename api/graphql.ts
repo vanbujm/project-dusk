@@ -16,11 +16,15 @@ const client = jwks({
   jwksRequestsPerMinute: 5,
   jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
 });
+const logs: any[] = [];
+const logger = (...args: any) => {
+  logs.push(args);
+};
 
 const getKey = (header: any, callback: any) => {
-  console.log('getKey header', header);
+  logger('getKey header', header);
   client.getSigningKey(header.kid, (err: any, key: { publicKey: any; rsaPublicKey: any }) => {
-    console.log('getSigningKey', key);
+    logger('getSigningKey', key);
     const signingKey = key.publicKey || key.rsaPublicKey;
     callback(null, signingKey);
   });
@@ -32,7 +36,7 @@ const apolloServer = new ApolloServer({
   playground: true,
   introspection: true,
   context: async ({ req }: any) => {
-    console.log('resolving context');
+    logger('resolving context');
     const secret = await new Promise((resolve, reject) =>
       jwt.verify(
         req.headers.authorization,
@@ -53,7 +57,7 @@ const apolloServer = new ApolloServer({
       )
     );
 
-    console.log('secret', secret);
+    logger('secret', secret);
 
     const isValid = jwt.verify(req.headers.authorization, secret, {
       issuer,
@@ -61,9 +65,9 @@ const apolloServer = new ApolloServer({
       algorithms: ['RS256'],
     });
 
-    console.log(isValid);
+    logger(isValid);
     if (!isValid) {
-      console.log('invalid token');
+      logger('invalid token');
       return {};
     }
     const getUserInfo = await fetch(`${issuer}userinfo`, {
@@ -84,5 +88,8 @@ export default apolloServer
     return cors(async (req: VercelRequest, res: VercelResponse) =>
       req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res)
     );
+  })
+  .then(() => {
+    console.error('logs', logs);
   })
   .catch((err: any) => console.error(err));
