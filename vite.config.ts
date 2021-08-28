@@ -1,9 +1,26 @@
 import { defineConfig } from 'vite';
 import ViteFonts from 'vite-plugin-fonts';
 import reactRefresh from '@vitejs/plugin-react-refresh';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        api: resolve(__dirname, 'backend/api/graphql.ts'),
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === 'api') {
+            return `api/graphql.js`;
+          }
+          return `assets/${chunkInfo.name}.js`;
+        },
+      },
+    },
+  },
   plugins: [
     reactRefresh(),
     ViteFonts({

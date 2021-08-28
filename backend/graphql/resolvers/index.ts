@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { QueryResolvers } from '../../generated/graphql';
+import { QueryResolvers } from '../../../generated/graphql';
 const { getPrismaClient } = require('../../lib/prisma');
 
 const client = getPrismaClient();
