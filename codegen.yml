@@ -4,14 +4,15 @@ documents: "./src/**/*.tsx"
 generates:
   generated/graphql.ts:
     plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
-#      - "typescript-graphql-files-modules"
-      - "fragment-matcher"
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+      - typescript-resolvers
+      #      - "typescript-graphql-files-modules"
+      - fragment-matcher
   ./graphql.schema.json:
     plugins:
-      - "introspection"
+      - introspection
 hooks:
   afterAllFileWrite:
     - prettier --write

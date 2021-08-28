@@ -465,9 +465,13 @@
                 "name": "where",
                 "description": null,
                 "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "ClassUniqueInput",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ClassUniqueInput",
+                    "ofType": null
+                  }
                 },
                 "defaultValue": null,
                 "isDeprecated": false,

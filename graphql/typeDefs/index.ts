@@ -48,6 +48,6 @@ export const typeDefs = gql`
   }
 
   type Query {
-    narrations(where: ClassUniqueInput): [Narration!]!
+    narrations(where: ClassUniqueInput!): [Narration!]!
   }
 `;
