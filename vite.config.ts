@@ -1,40 +1,10 @@
 import { defineConfig } from 'vite';
 import ViteFonts from 'vite-plugin-fonts';
 import reactRefresh from '@vitejs/plugin-react-refresh';
-import { resolve } from 'path';
-import { copySync, emptyDirSync, removeSync } from 'fs-extra';
-
-const copyApiPlugin = () => ({
-  name: 'copyApiPlugin',
-  writeBundle: ({ dir }: { dir: string | undefined }) => {
-    const apiDir = resolve(`${dir}`, 'api');
-    const apiDest = resolve(__dirname, 'api');
-    emptyDirSync(apiDest);
-    copySync(apiDir, apiDest);
-    // removeSync(apiDir);
-  },
-});
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        api: resolve(__dirname, 'backend/api/graphql.ts'),
-      },
-      output: {
-        entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === 'api') {
-            return `api/graphql.js`;
-          }
-          return `assets/${chunkInfo.name}.js`;
-        },
-      },
-    },
-  },
   plugins: [
-    copyApiPlugin(),
     reactRefresh(),
     ViteFonts({
       google: {

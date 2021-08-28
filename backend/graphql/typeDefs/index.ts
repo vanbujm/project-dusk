@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { gql } = require('apollo-server-micro');
+import { gql } from 'apollo-server-micro';
 
 export const typeDefs = gql`
   type Answer {

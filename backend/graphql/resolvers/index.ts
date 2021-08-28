@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { QueryResolvers } from '../../../generated/graphql';
-const { getPrismaClient } = require('../../lib/prisma');
+import { getPrismaClient } from '../../lib/prisma';
 
 const client = getPrismaClient();
 
@@ -17,8 +17,8 @@ export type ValidatedContext = Required<Context>;
 const queryResolvers: QueryResolvers<ValidatedContext> = {
   narrations: (parent, { where }, { user }) =>
     client.narration.findMany({
-      where: { AND: [{ classes: { every: { ...where, player: { every: { email: user.email } } } } }] },
-    }),
+      where: { AND: [{ classes: { every: { ...(where as any), player: { every: { email: user.email } } } } }] },
+    }) as any,
 };
 
 export const resolvers = {

@@ -85,7 +85,7 @@ const apolloServer = new ApolloServer({
   },
 });
 
-module.exports = apolloServer
+export default apolloServer
   .start()
   .then(() => {
     const handler = apolloServer.createHandler({ path: '/api/graphql' });
