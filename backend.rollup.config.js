@@ -1,12 +1,10 @@
 import typescript from '@rollup/plugin-typescript';
-import { resolve } from 'path';
 
 export default {
-  input: resolve(__dirname, 'backend/api/graphql.ts'),
+  input: 'backend/api/graphql.ts',
   output: {
     dir: 'api',
     format: 'cjs',
-    exports: 'auto',
   },
   plugins: [
     typescript({

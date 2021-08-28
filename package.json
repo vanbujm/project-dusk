@@ -5,7 +5,6 @@
     "dev": "vite",
     "build": "vite build",
     "build:api": "rollup -c backend.rollup.config.js",
-    "vercel-build": "yarn build && yarn build:api",
     "serve": "vite preview",
     "generate": "graphql-codegen --config codegen.yml"
   },
