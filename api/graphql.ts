@@ -37,10 +37,12 @@ const apolloServer = new ApolloServer({
       // const sigingInfo = await client.getSigningKey(decoded?.header?.kid);
       //
       // console.log('getSigningKey', test);
+      const token = jwt.decode(req.headers.authorization.replace('Bearer ', ''), { complete: true });
+      console.log('token', token);
 
       const isValid = new Promise((resolve, reject) =>
         jwt.verify(
-          req.headers.authorization,
+          token,
           getKey,
           {
             issuer,
