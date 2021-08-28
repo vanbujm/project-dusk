@@ -14,25 +14,15 @@ let client = jwks({
   cache: true,
   rateLimit: true,
   jwksRequestsPerMinute: 5,
-  jwksUri: 'https://dev-zah-ux2d.us.auth0.com/.well-known/jwks.json',
+  jwksUri: `${issuer}.well-known/jwks.json`,
 });
 
-// function getKey(header: any, callback: any) {
-//   console.log('getKey header', header);
-//   if (!client) {
-//     client = jwks({
-//       cache: true,
-//       rateLimit: true,
-//       jwksRequestsPerMinute: 5,
-//       jwksUri: 'https://sandrino.auth0.com/.well-known/jwks.json',
-//     });
-//   }
-//   client.getSigningKey(header.kid, function (err: any, key: { publicKey: any; rsaPublicKey: any }) {
-//     console.log('getSigningKey', key);
-//     const signingKey = key.publicKey || key.rsaPublicKey;
-//     callback(null, signingKey);
-//   });
-// }
+const getKey = (header: { kid: any }, callback: (arg0: null, arg1: any) => void) => {
+  client.getSigningKey(header.kid, (err: any, key: { publicKey: any; rsaPublicKey: any }) => {
+    const signingKey = key.publicKey || key.rsaPublicKey;
+    callback(null, signingKey);
+  });
+};
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -41,57 +31,45 @@ const apolloServer = new ApolloServer({
   introspection: true,
   context: async ({ req }: any) => {
     try {
-      console.log('resolving context');
-      const decoded = req.headers.authorization
-        ? jwt.decode(req.headers.authorization.replace('Bearer ', ''), { complete: true })
-        : {};
-      console.log('headers', JSON.stringify(decoded).substr(0, 200));
-      const test = await client.getSigningKey(decoded?.header?.kid);
+      // const decoded = req.headers.authorization
+      //   ? jwt.decode(req.headers.authorization.replace('Bearer ', ''), { complete: true })
+      //   : {};
+      // const sigingInfo = await client.getSigningKey(decoded?.header?.kid);
+      //
+      // console.log('getSigningKey', test);
 
-      console.log('getSigningKey', test);
+      const isValid = new Promise((resolve, reject) =>
+        jwt.verify(
+          req.headers.authorization,
+          getKey,
+          {
+            issuer,
+            audience: 'https://project-dusk.vercel.app/api',
+            algorithms: ['RS256'],
+          },
+          (err: any, decoded: unknown) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(decoded);
+            }
+          }
+        )
+      );
 
-      // const secret = await new Promise((resolve, reject) =>
-      //   jwt.verify(
-      //     req.headers.authorization,
-      //     getKey,
-      //     {
-      //       issuer,
-      //       audience: 'https://project-dusk.vercel.app/api',
-      //       algorithms: ['RS256'],
-      //     },
-      //     function (err: any, decoded: unknown) {
-      //       if (err) {
-      //         console.error('Authorization Error: ', err);
-      //         reject(err);
-      //       } else {
-      //         resolve(decoded);
-      //       }
-      //     }
-      //   )
-      // );
-      //
-      // console.log('secret', secret);
-      //
-      // const isValid = jwt.verify(req.headers.authorization, secret, {
-      //   issuer,
-      //   audience: 'https://project-dusk.vercel.app/api',
-      //   algorithms: ['RS256'],
-      // });
-      //
-      // console.log('isValid', isValid);
-      // if (!isValid) {
-      //   console.error('invalid token');
-      //   return {};
-      // }
-      // const getUserInfo = await fetch(`${issuer}userinfo`, {
-      //   headers: {
-      //     'Content-Type': 'Application/json',
-      //     Authorization: req.headers.authorization,
-      //   },
-      // });
-      // const userInfo = await getUserInfo.json();
-      // return { user: userInfo };
-      return {};
+      console.log('isValid', isValid);
+      if (!isValid) {
+        console.error('invalid token');
+        return {};
+      }
+      const getUserInfo = await fetch(`${issuer}userinfo`, {
+        headers: {
+          'Content-Type': 'Application/json',
+          Authorization: req.headers.authorization,
+        },
+      });
+      const userInfo = await getUserInfo.json();
+      return { user: userInfo };
     } catch (e) {
       console.error('context error', e);
       return {};
