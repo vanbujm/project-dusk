@@ -1,8 +1,6 @@
 import typescript from '@rollup/plugin-typescript';
 import { resolve } from 'path';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
+
 export default {
   input: resolve(__dirname, 'backend/api/graphql.ts'),
   output: {
@@ -11,15 +9,21 @@ export default {
     exports: 'auto',
   },
   plugins: [
-    // nodeResolve({
-    //   preferBuiltins: true,
-    // }),
-    // commonjs(),
-    // json(),
     typescript({
       exclude: 'src/**',
       allowSyntheticDefaultImports: true,
       tsconfig: false,
     }),
+  ],
+  external: [
+    'graphql-middleware',
+    '@graphql-tools/schema',
+    'apollo-server-micro',
+    'jsonwebtoken',
+    'jwks-rsa',
+    'cross-fetch',
+    'micro-cors',
+    'graphql-shield',
+    '@prisma/client',
   ],
 };
