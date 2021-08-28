@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "vercel-build": "vite build",
     "serve": "vite preview",
     "generate": "graphql-codegen --config codegen.yml"
   },
