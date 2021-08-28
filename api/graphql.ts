@@ -42,7 +42,9 @@ const apolloServer = new ApolloServer({
   context: async ({ req }: any) => {
     try {
       console.log('resolving context');
-      const decoded = req.headers.authorization ? jwt.decode(req.headers.authorization, { complete: true }) : {};
+      const decoded = req.headers.authorization
+        ? jwt.decode(req.headers.authorization.replace('Bearer ', ''), { complete: true })
+        : {};
       console.log('headers', JSON.stringify(decoded).substr(0, 200));
       const test = await client.getSigningKey(decoded?.header?.kid);
 
