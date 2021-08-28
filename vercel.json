@@ -11,6 +11,8 @@
     }
   ],
   "functions": {
-    "dist/api/graphql.js": {}
+    "dist/api/graphql.js": {
+      "memory": 3008
+    }
   }
 }
