@@ -1,15 +1,18 @@
 /* eslint-disable */
 import { VercelRequest, VercelResponse } from '@vercel/node';
-const { applyMiddleware } = require('graphql-middleware');
-const { makeExecutableSchema } = require('@graphql-tools/schema');
-const { ApolloServer } = require('apollo-server-micro');
-const { typeDefs } = require('../graphql/typeDefs');
-const { resolvers } = require('../graphql/resolvers');
-const { permissions } = require('../graphql/permissions');
-const jwt = require('jsonwebtoken');
-const jwks = require('jwks-rsa');
-const fetch = require('cross-fetch');
-const cors = require('micro-cors')();
+import { applyMiddleware } from 'graphql-middleware';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { ApolloServer } from 'apollo-server-micro';
+import { typeDefs } from '../graphql/typeDefs';
+import { resolvers } from '../graphql/resolvers';
+import { permissions } from '../graphql/permissions';
+import jwt from 'jsonwebtoken';
+import jwks from 'jwks-rsa';
+import fetch from 'cross-fetch';
+import microCors from 'micro-cors';
+
+const cors = microCors();
+
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 
 let client = jwks({
@@ -20,8 +23,8 @@ let client = jwks({
 });
 
 const getKey = (header: { kid: any }, callback: (arg0: null, arg1: any) => void) => {
-  client.getSigningKey(header.kid, (err: any, key: { publicKey: any; rsaPublicKey: any }) => {
-    const signingKey = key.publicKey || key.rsaPublicKey;
+  client.getSigningKey(header.kid, (err, key) => {
+    const signingKey = (key as any).publicKey || (key as any).rsaPublicKey;
     callback(null, signingKey);
   });
 };
@@ -36,7 +39,6 @@ const schema = applyMiddleware(
 
 const apolloServer = new ApolloServer({
   schema,
-  playground: true,
   introspection: true,
   context: async ({ req }: any) => {
     try {
@@ -48,7 +50,7 @@ const apolloServer = new ApolloServer({
       const isValid = await new Promise((resolve, reject) =>
         jwt.verify(
           token,
-          getKey,
+          getKey as any,
           {
             issuer,
             audience: 'https://project-dusk.vercel.app/api',
@@ -87,8 +89,8 @@ module.exports = apolloServer
   .start()
   .then(() => {
     const handler = apolloServer.createHandler({ path: '/api/graphql' });
-    return cors(async (req: VercelRequest, res: VercelResponse) =>
-      req.method === 'OPTIONS' ? res.send('ok') : await handler(req, res)
+    return cors(async (req, res) =>
+      req.method === 'OPTIONS' ? (res as VercelResponse).send('ok') : await handler(req, res)
     );
   })
   .catch((err: any) => console.error('app error: ', err));

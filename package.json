@@ -43,6 +43,7 @@
     "@graphql-codegen/typescript-react-apollo": "3.1.2",
     "@graphql-codegen/typescript-resolvers": "^2.1.2",
     "@types/fs-extra": "^9.0.12",
+    "@types/micro-cors": "^0.1.2",
     "@types/node": "^16.7.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
