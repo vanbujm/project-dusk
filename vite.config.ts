@@ -2,6 +2,18 @@ import { defineConfig } from 'vite';
 import ViteFonts from 'vite-plugin-fonts';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import { resolve } from 'path';
+import { copySync, emptyDirSync, removeSync } from 'fs-extra';
+
+const copyApiPlugin = () => ({
+  name: 'copyApiPlugin',
+  writeBundle: ({ dir }: { dir: string | undefined }) => {
+    const apiDir = resolve(`${dir}`, 'api');
+    const apiDest = resolve(__dirname, 'api');
+    emptyDirSync(apiDest);
+    copySync(apiDir, apiDest);
+    removeSync(apiDir);
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,6 +34,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    copyApiPlugin(),
     reactRefresh(),
     ViteFonts({
       google: {
