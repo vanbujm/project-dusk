@@ -34,7 +34,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    copyApiPlugin(),
+    // copyApiPlugin(),
     reactRefresh(),
     ViteFonts({
       google: {
