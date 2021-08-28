@@ -31,16 +31,18 @@ const apolloServer = new ApolloServer({
   introspection: true,
   context: async ({ req }: any) => {
     try {
+      if (!req.headers.authorization || req.headers.authorization === '') {
+        return {};
+      }
       // const decoded = req.headers.authorization
       //   ? jwt.decode(req.headers.authorization.replace('Bearer ', ''), { complete: true })
       //   : {};
       // const sigingInfo = await client.getSigningKey(decoded?.header?.kid);
       //
       // console.log('getSigningKey', test);
-      const token = jwt.decode(req.headers.authorization.replace('Bearer ', ''), { complete: true });
-      console.log('token', token);
+      const token = req.headers.authorization.replace('Bearer ', '');
 
-      const isValid = new Promise((resolve, reject) =>
+      const isValid = await new Promise((resolve, reject) =>
         jwt.verify(
           token,
           getKey,
