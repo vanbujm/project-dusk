@@ -1,7 +1,8 @@
 /* eslint-disable */
 import { VercelRequest, VercelResponse } from '@vercel/node';
 const { applyMiddleware } = require('graphql-middleware');
-const { ApolloServer, makeExecutableSchema } = require('apollo-server-micro');
+const { makeExecutableSchema } = require('apollo-server');
+const { ApolloServer } = require('apollo-server-micro');
 const { typeDefs } = require('../graphql/typeDefs');
 const { resolvers } = require('../graphql/resolvers');
 const { permissions } = require('../graphql/permissions');
