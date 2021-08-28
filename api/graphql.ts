@@ -1,9 +1,10 @@
 /* eslint-disable */
 import { VercelRequest, VercelResponse } from '@vercel/node';
-
-const { ApolloServer } = require('apollo-server-micro');
+const { applyMiddleware } = require('graphql-middleware');
+const { ApolloServer, makeExecutableSchema } = require('apollo-server-micro');
 const { typeDefs } = require('../graphql/typeDefs');
 const { resolvers } = require('../graphql/resolvers');
+const { permissions } = require('../graphql/permissions');
 const jwt = require('jsonwebtoken');
 const jwks = require('jwks-rsa');
 const fetch = require('cross-fetch');
@@ -24,9 +25,16 @@ const getKey = (header: { kid: any }, callback: (arg0: null, arg1: any) => void)
   });
 };
 
+const schema = applyMiddleware(
+  makeExecutableSchema({
+    typeDefs,
+    resolvers,
+  }),
+  permissions
+);
+
 const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   playground: true,
   introspection: true,
   context: async ({ req }: any) => {
