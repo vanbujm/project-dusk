@@ -83,7 +83,7 @@ const apolloServer = new ApolloServer({
   },
 });
 
-export default apolloServer
+const server = apolloServer
   .start()
   .then(() => {
     const handler = apolloServer.createHandler({ path: '/api/graphql' });
@@ -92,3 +92,5 @@ export default apolloServer
     );
   })
   .catch((err: any) => console.error('app error: ', err));
+
+module.exports = server;

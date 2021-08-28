@@ -11,7 +11,7 @@ const copyApiPlugin = () => ({
     const apiDest = resolve(__dirname, 'api');
     emptyDirSync(apiDest);
     copySync(apiDir, apiDest);
-    // removeSync(apiDir);
+    removeSync(apiDir);
   },
 });
 
