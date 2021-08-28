@@ -10,6 +10,7 @@ type UserInfo = {
 
 const queryResolvers: QueryResolvers<UserInfo> = {
   narrations: (parent, { where }, context) => {
+    console.log(context);
     if (!where.name && !where.id) {
       throw new Error('narrations query requires either id or name');
     }
