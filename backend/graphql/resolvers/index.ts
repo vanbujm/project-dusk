@@ -17,7 +17,12 @@ export type ValidatedContext = Required<Context>;
 const queryResolvers: QueryResolvers<ValidatedContext> = {
   narrations: (parent, { where }, { user }) =>
     client.narration.findMany({
-      where: { AND: [{ classes: { every: { ...(where as any), player: { every: { email: user.email } } } } }] },
+      where: {
+        OR: [
+          { classes: { every: { ...(where as any), player: { every: { email: user.email } } } } },
+          { classes: { every: { ...(where as any), player: null } } },
+        ],
+      },
     }) as any,
 };
 
