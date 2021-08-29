@@ -5,14 +5,13 @@ var schema$1 = require('@graphql-tools/schema');
 var apolloServerMicro = require('apollo-server-micro');
 var client$2 = require('@prisma/client');
 var graphqlShield = require('graphql-shield');
-var jwt = require('jsonwebtoken');
 var jwks = require('jwks-rsa');
 var fetch = require('cross-fetch');
 var microCors = require('micro-cors');
+var jsonwebtoken = require('jsonwebtoken');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var jwt__default = /*#__PURE__*/_interopDefaultLegacy(jwt);
 var jwks__default = /*#__PURE__*/_interopDefaultLegacy(jwks);
 var fetch__default = /*#__PURE__*/_interopDefaultLegacy(fetch);
 var microCors__default = /*#__PURE__*/_interopDefaultLegacy(microCors);
@@ -105,7 +104,12 @@ var queryResolvers = {
         var where = _a.where;
         var user = _b.user;
         return client$1.narration.findMany({
-            where: { AND: [{ classes: { every: __assign(__assign({}, where), { player: { every: { email: user.email } } }) } }] }
+            where: {
+                OR: [
+                    { classes: { every: __assign(__assign({}, where), { player: { every: { email: user.email } } }) } },
+                    { classes: { every: __assign(__assign({}, where), { player: null }) } },
+                ]
+            }
         });
     }
 };
@@ -113,22 +117,24 @@ var resolvers = {
     Query: queryResolvers
 };
 
-var isAuthenticated = graphqlShield.rule()(function (parent, args, ctx) { return __awaiter(void 0, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
-    return [2 /*return*/, !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email)];
-}); }); });
-var hasEmailOrId = graphqlShield.inputRule()(function (yup) {
+var isAuthenticated = graphqlShield.rule()(function (parent, args, ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a;
+    return __generator(this, function (_b) {
+        console.log('isAuthenticated', { args: args, ctx: ctx });
+        return [2 /*return*/, !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email)];
+    });
+}); });
+var isMissing = function (str) { return !str || str === ''; };
+var hasClassNameOrId = graphqlShield.inputRule()(function (yup) {
     return yup.object({
         where: yup.object({
-            email: yup
-                .string()
-                .email()
-                .when('id', {
-                is: function (id) { return !id || id.length === 0; },
-                then: yup.string().email().required(),
+            name: yup.string().when('id', {
+                is: isMissing,
+                then: yup.string().required(),
                 otherwise: yup.string()
             }),
-            id: yup.string().when('email', {
-                is: function (email) { return !email || email.length === 0; },
+            id: yup.string().when('name', {
+                is: isMissing,
                 then: yup.string().required(),
                 otherwise: yup.string()
             })
@@ -139,10 +145,11 @@ var hasEmailOrId = graphqlShield.inputRule()(function (yup) {
 });
 var permissions = graphqlShield.shield({
     Query: {
-        narrations: graphqlShield.and(hasEmailOrId, isAuthenticated)
+        narrations: graphqlShield.and(hasClassNameOrId, isAuthenticated)
     }
 });
 
+console.log('Starting server...');
 var cors = microCors__default['default']();
 var issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 var client = jwks__default['default']({
@@ -177,7 +184,7 @@ var apolloServer = new apolloServerMicro.ApolloServer({
                         }
                         token_1 = req.headers.authorization.replace('Bearer ', '');
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
-                                return jwt__default['default'].verify(token_1, getKey, {
+                                return jsonwebtoken.verify(token_1, getKey, {
                                     issuer: issuer,
                                     audience: 'https://project-dusk.vercel.app/api',
                                     algorithms: ['RS256']
@@ -221,6 +228,7 @@ var apolloServer = new apolloServerMicro.ApolloServer({
 var graphql = apolloServer
     .start()
     .then(function () {
+    console.log('Graphql server started 🚀');
     var handler = apolloServer.createHandler({ path: '/api/graphql' });
     return cors(function (req, res) { return __awaiter(void 0, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
         switch (_b.label) {

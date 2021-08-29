@@ -4,7 +4,7 @@ import { useAuthWithAutoLogin } from './hooks/auth';
 import { useMemo } from 'react';
 
 const httpLink = createHttpLink({
-  uri: 'https://project-dusk.vercel.app/api/graphql',
+  uri: `${import.meta.env.VITE_API}/graphql`,
 });
 
 export const useAuthenticatedApolloClient = () => {

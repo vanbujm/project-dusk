@@ -13,7 +13,7 @@ export const useAuthWithAutoLogin = () => {
       };
       try {
         setAuthToken(await getAccessTokenSilently(opts));
-      } catch (e) {
+      } catch (e: any) {
         if (e.error === 'consent_required') {
           setAuthToken(await getAccessTokenWithPopup(opts));
         }

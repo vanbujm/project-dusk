@@ -1,15 +1,17 @@
 /* eslint-disable */
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import { VercelResponse } from '@vercel/node';
 import { applyMiddleware } from 'graphql-middleware';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloServer } from 'apollo-server-micro';
 import { typeDefs } from '../graphql/typeDefs';
 import { resolvers } from '../graphql/resolvers';
 import { permissions } from '../graphql/permissions';
-import jwt from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
 import fetch from 'cross-fetch';
 import microCors from 'micro-cors';
+import { verify } from 'jsonwebtoken';
+
+console.log('Starting server...');
 
 const cors = microCors();
 
@@ -48,7 +50,7 @@ const apolloServer = new ApolloServer({
       const token = req.headers.authorization.replace('Bearer ', '');
 
       const isValid = await new Promise((resolve, reject) =>
-        jwt.verify(
+        verify(
           token,
           getKey as any,
           {
@@ -88,6 +90,7 @@ const apolloServer = new ApolloServer({
 export default apolloServer
   .start()
   .then(() => {
+    console.log('Graphql server started 🚀');
     const handler = apolloServer.createHandler({ path: '/api/graphql' });
     return cors(async (req, res) =>
       req.method === 'OPTIONS' ? (res as VercelResponse).send('ok') : await handler(req, res)

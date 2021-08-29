@@ -10,6 +10,7 @@ export default {
     typescript({
       exclude: 'src/**',
       allowSyntheticDefaultImports: true,
+      esModuleInterop: true,
       tsconfig: false,
     }),
   ],

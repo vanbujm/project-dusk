@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "dev:api": "vercel dev",
     "build": "vite build",
     "build:api": "rollup -c backend.rollup.config.js",
     "serve": "vite preview",
@@ -44,6 +45,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.2.5",
+    "@types/jsonwebtoken": "^8.5.5",
     "@types/micro-cors": "^0.1.2",
     "@types/node": "^16.7.5",
     "@types/react": "^17.0.0",
