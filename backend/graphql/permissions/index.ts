@@ -7,20 +7,19 @@ const isAuthenticated = rule()(async (parent, args: RequireFields<QueryNarration
   return !!ctx?.user?.email;
 });
 
-const hasEmailOrId = inputRule()(
+const isMissing = (str?: string) => !str || str === '';
+
+const hasClassNameOrId = inputRule()(
   (yup) =>
     yup.object({
       where: yup.object({
-        email: yup
-          .string()
-          .email()
-          .when('id', {
-            is: (id?: string) => !id || id.length === 0,
-            then: yup.string().email().required(),
-            otherwise: yup.string(),
-          }),
-        id: yup.string().when('email', {
-          is: (email?: string) => !email || email.length === 0,
+        name: yup.string().when('id', {
+          is: isMissing,
+          then: yup.string().required(),
+          otherwise: yup.string(),
+        }),
+        id: yup.string().when('name', {
+          is: isMissing,
           then: yup.string().required(),
           otherwise: yup.string(),
         }),
@@ -33,6 +32,6 @@ const hasEmailOrId = inputRule()(
 
 export const permissions = shield({
   Query: {
-    narrations: and(hasEmailOrId, isAuthenticated),
+    narrations: and(hasClassNameOrId, isAuthenticated),
   },
 });
