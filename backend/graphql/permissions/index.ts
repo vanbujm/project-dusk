@@ -1,13 +1,15 @@
 import { and, inputRule, rule, shield } from 'graphql-shield';
 import { Context } from '../resolvers';
-import { QueryNarrationsArgs, RequireFields } from '../../../generated/graphql';
 
-const isAuthenticated = rule()(async (parent, args: RequireFields<QueryNarrationsArgs, 'where'>, ctx: Context) => {
-  console.log('isAuthenticated', { args, ctx });
+const isAuthenticated = rule({ cache: 'contextual' })(async (parent, args, ctx: Context) => {
+  console.log('isAuthenticated', !!ctx?.user?.email);
   return !!ctx?.user?.email;
 });
 
-const isMissing = (str?: string) => !str || str === '';
+const isMissing = (str?: string) => {
+  console.log('isMissing', str, !str || str === '');
+  return !str || str === '';
+};
 
 const hasClassNameOrId = inputRule()(
   (yup) =>

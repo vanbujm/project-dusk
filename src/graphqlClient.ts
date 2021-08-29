@@ -4,7 +4,7 @@ import { useAuthWithAutoLogin } from './hooks/auth';
 import { useMemo } from 'react';
 
 const httpLink = createHttpLink({
-  uri: `${import.meta.env.VITE_API}/graphql`,
+  uri: import.meta.env.VITE_API,
 });
 
 export const useAuthenticatedApolloClient = () => {
