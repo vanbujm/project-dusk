@@ -6,7 +6,7 @@
     "dev:api": "vercel dev",
     "build": "vite build",
     "build:api": "rollup -c backend.rollup.config.js",
-    "vercel-build": "yarn build && (./timeout.sh yarn build:api || true)",
+    "vercel-build": "./timeout.sh yarn build:api || true",
     "serve": "vite preview",
     "generate": "graphql-codegen --config codegen.yml",
     "db:reset": "prisma migrate reset",
