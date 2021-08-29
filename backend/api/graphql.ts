@@ -11,8 +11,6 @@ import fetch from 'cross-fetch';
 import microCors from 'micro-cors';
 import { verify } from 'jsonwebtoken';
 
-console.log('Starting server...');
-
 const cors = microCors();
 
 const issuer = 'https://dev-zah-ux2d.us.auth0.com/';
