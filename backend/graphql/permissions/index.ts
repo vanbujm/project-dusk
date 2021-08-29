@@ -2,9 +2,10 @@ import { and, inputRule, rule, shield } from 'graphql-shield';
 import { Context } from '../resolvers';
 import { QueryNarrationsArgs, RequireFields } from '../../../generated/graphql';
 
-const isAuthenticated = rule()(
-  async (parent, args: RequireFields<QueryNarrationsArgs, 'where'>, ctx: Context) => !!ctx?.user?.email
-);
+const isAuthenticated = rule()(async (parent, args: RequireFields<QueryNarrationsArgs, 'where'>, ctx: Context) => {
+  console.log('isAuthenticated', { args, ctx });
+  return !!ctx?.user?.email;
+});
 
 const hasEmailOrId = inputRule()(
   (yup) =>
