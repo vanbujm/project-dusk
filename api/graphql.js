@@ -117,32 +117,34 @@ var resolvers = {
     Query: queryResolvers
 };
 
-var isAuthenticated = graphqlShield.rule({ cache: 'contextual' })(function (parent, args, ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, _b;
-    return __generator(this, function (_c) {
-        console.log('isAuthenticated', !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email));
-        return [2 /*return*/, !!((_b = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _b === void 0 ? void 0 : _b.email)];
-    });
-}); });
-var isMissing = function (str) {
-    console.log('isMissing', str, !str || str === '');
-    return !str || str === '';
-};
+var isAuthenticated = graphqlShield.rule({ cache: 'contextual' })(function (parent, args, ctx) { return __awaiter(void 0, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
+    return [2 /*return*/, !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email)];
+}); }); });
+var isMissing = function (str) { return !str || str === ''; };
 var hasClassNameOrId = graphqlShield.inputRule()(function (yup) {
-    return yup.object({
-        where: yup.object({
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
+    console.error(args);
+    return yup
+        .object({
+        where: yup
+            .object({
             name: yup.string().when('id', {
                 is: isMissing,
-                then: yup.string().required(),
+                then: yup.string().required('name required if id not provided'),
                 otherwise: yup.string()
             }),
             id: yup.string().when('name', {
                 is: isMissing,
-                then: yup.string().required(),
+                then: yup.string().required('id required if name not provided'),
                 otherwise: yup.string()
             })
         })
-    });
+            .required('"where" arg required')
+    })
+        .required('narrations query requires an argument');
 }, {
     abortEarly: false
 });
