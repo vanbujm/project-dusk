@@ -6,9 +6,8 @@ const isAuthenticated = rule({ cache: 'contextual' })(async (parent, args, ctx: 
 const isMissing = (str?: string) => !str || str === '';
 
 const hasClassNameOrId = inputRule()(
-  (yup, ...args) => {
-    console.error(args);
-    return yup
+  (yup) =>
+    yup
       .object({
         where: yup
           .object({
@@ -25,8 +24,7 @@ const hasClassNameOrId = inputRule()(
           })
           .required('"where" arg required'),
       })
-      .required('narrations query requires an argument');
-  },
+      .required('narrations query requires an argument'),
   {
     abortEarly: false,
   }
@@ -34,6 +32,6 @@ const hasClassNameOrId = inputRule()(
 
 export const permissions = shield({
   Query: {
-    narrations: and(hasClassNameOrId, isAuthenticated),
+    narrations: isAuthenticated,
   },
 });

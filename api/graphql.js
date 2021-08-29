@@ -121,12 +121,7 @@ var isAuthenticated = graphqlShield.rule({ cache: 'contextual' })(function (pare
     return [2 /*return*/, !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email)];
 }); }); });
 var isMissing = function (str) { return !str || str === ''; };
-var hasClassNameOrId = graphqlShield.inputRule()(function (yup) {
-    var args = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        args[_i - 1] = arguments[_i];
-    }
-    console.error(args);
+graphqlShield.inputRule()(function (yup) {
     return yup
         .object({
         where: yup
@@ -150,7 +145,7 @@ var hasClassNameOrId = graphqlShield.inputRule()(function (yup) {
 });
 var permissions = graphqlShield.shield({
     Query: {
-        narrations: graphqlShield.and(hasClassNameOrId, isAuthenticated)
+        narrations: isAuthenticated
     }
 });
 
