@@ -1,4 +1,13 @@
 #!/bin/bash
+
+echo "Env vars"
+echo "AWS_EXECUTION_ENV"
+echo "$AWS_EXECUTION_ENV"
+echo "LAMBDA_TASK_ROOT"
+echo "$LAMBDA_TASK_ROOT"
+echo "CI"
+echo "$CI"
+echo "Done"
 #
 # The Bash shell script executes a command with a time-out.
 # Upon time-out expiration SIGTERM (15) is sent to the process. If the signal
