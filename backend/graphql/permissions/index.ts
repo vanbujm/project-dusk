@@ -1,7 +1,10 @@
 import { and, inputRule, rule, shield } from 'graphql-shield';
 import { Context } from '../resolvers';
 
-const isAuthenticated = rule({ cache: 'contextual' })(async (parent, args, ctx: Context) => !!ctx?.user?.email);
+const isAuthenticated = rule({ cache: 'contextual' })(async (parent, args, ctx: Context) => {
+  console.error('isAuthenticated');
+  return !!ctx?.user?.email;
+});
 
 const isMissing = (str?: string) => !str || str === '';
 

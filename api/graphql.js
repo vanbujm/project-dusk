@@ -103,6 +103,7 @@ var queryResolvers = {
     narrations: function (parent, _a, _b) {
         var where = _a.where;
         var user = _b.user;
+        console.log('narrations resolver');
         return client$1.narration.findMany({
             where: {
                 OR: [
@@ -117,9 +118,13 @@ var resolvers = {
     Query: queryResolvers
 };
 
-var isAuthenticated = graphqlShield.rule({ cache: 'contextual' })(function (parent, args, ctx) { return __awaiter(void 0, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
-    return [2 /*return*/, !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email)];
-}); }); });
+var isAuthenticated = graphqlShield.rule({ cache: 'contextual' })(function (parent, args, ctx) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a;
+    return __generator(this, function (_b) {
+        console.error('isAuthenticated');
+        return [2 /*return*/, !!((_a = ctx === null || ctx === void 0 ? void 0 : ctx.user) === null || _a === void 0 ? void 0 : _a.email)];
+    });
+}); });
 var isMissing = function (str) { return !str || str === ''; };
 graphqlShield.inputRule()(function (yup) {
     return yup
@@ -149,7 +154,6 @@ var permissions = graphqlShield.shield({
     }
 });
 
-console.log('Starting server...');
 var cors = microCors__default['default']();
 var issuer = 'https://dev-zah-ux2d.us.auth0.com/';
 var client = jwks__default['default']({
@@ -168,9 +172,42 @@ var schema = graphqlMiddleware.applyMiddleware(schema$1.makeExecutableSchema({
     typeDefs: typeDefs,
     resolvers: resolvers
 }), permissions);
+var myPlugin = {
+    // Fires whenever a GraphQL request is received from a client.
+    requestDidStart: function (requestContext) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log('Request started! Query:\n' + requestContext.request.query);
+                return [2 /*return*/, {
+                        // Fires whenever Apollo Server will parse a GraphQL
+                        // request to create its associated document AST.
+                        parsingDidStart: function (requestContext) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    console.log('Parsing started!');
+                                    return [2 /*return*/];
+                                });
+                            });
+                        },
+                        // Fires whenever Apollo Server will validate a
+                        // request's document AST against your GraphQL schema.
+                        validationDidStart: function (requestContext) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    console.log('Validation started!');
+                                    return [2 /*return*/];
+                                });
+                            });
+                        }
+                    }];
+            });
+        });
+    }
+};
 var apolloServer = new apolloServerMicro.ApolloServer({
     schema: schema,
     introspection: true,
+    plugins: [myPlugin],
     context: function (_a) {
         var req = _a.req;
         return __awaiter(void 0, void 0, void 0, function () {
@@ -225,24 +262,31 @@ var apolloServer = new apolloServerMicro.ApolloServer({
         });
     }
 });
-var graphql = apolloServer
-    .start()
-    .then(function () {
-    console.log('Graphql server started 🚀');
-    var handler = apolloServer.createHandler({ path: '/api/graphql' });
-    return cors(function (req, res) { return __awaiter(void 0, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
-        switch (_b.label) {
+// export default apolloServer
+//   .start()
+//   .then(() => {
+//     console.log('Graphql server started 🚀');
+//     const handler = apolloServer.createHandler({ path: '/api/graphql' });
+//     return cors(async (req, res) => {
+//       req.method === 'OPTIONS' ? (res as VercelResponse).send('ok') : await handler(req, res);
+//       console.log('statusCode', res.statusCode);
+//     });
+//   })
+//   .catch((err: any) => console.error('app error: ', err));
+// @ts-ignore
+var handler = cors(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var handler;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                if (!(req.method === 'OPTIONS')) return [3 /*break*/, 1];
-                _a = res.send('ok');
-                return [3 /*break*/, 3];
-            case 1: return [4 /*yield*/, handler(req, res)];
-            case 2:
-                _a = _b.sent();
-                _b.label = 3;
-            case 3: return [2 /*return*/, _a];
+                console.log(req.url);
+                return [4 /*yield*/, apolloServer.start()];
+            case 1:
+                _a.sent();
+                handler = apolloServer.createHandler({ path: '/api/graphql' });
+                return [2 /*return*/, handler(req, res)];
         }
-    }); }); });
-})["catch"](function (err) { return console.error('app error: ', err); });
+    });
+}); });
 
-module.exports = graphql;
+module.exports = handler;
