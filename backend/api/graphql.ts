@@ -37,31 +37,9 @@ const schema = applyMiddleware(
   permissions
 );
 
-const myPlugin = {
-  // Fires whenever a GraphQL request is received from a client.
-  async requestDidStart(requestContext) {
-    console.log('Request started! Query:\n' + requestContext.request.query);
-
-    return {
-      // Fires whenever Apollo Server will parse a GraphQL
-      // request to create its associated document AST.
-      async parsingDidStart(requestContext) {
-        console.log('Parsing started!');
-      },
-
-      // Fires whenever Apollo Server will validate a
-      // request's document AST against your GraphQL schema.
-      async validationDidStart(requestContext) {
-        console.log('Validation started!');
-      },
-    };
-  },
-};
-
 const apolloServer = new ApolloServer({
   schema,
   introspection: true,
-  plugins: [myPlugin],
   context: async ({ req }: any) => {
     try {
       if (!req.headers.authorization || req.headers.authorization === '') {
@@ -107,23 +85,10 @@ const apolloServer = new ApolloServer({
   },
 });
 
-// export default apolloServer
-//   .start()
-//   .then(() => {
-//     console.log('Graphql server started 🚀');
-//     const handler = apolloServer.createHandler({ path: '/api/graphql' });
-//     return cors(async (req, res) => {
-//       req.method === 'OPTIONS' ? (res as VercelResponse).send('ok') : await handler(req, res);
-//       console.log('statusCode', res.statusCode);
-//     });
-//   })
-//   .catch((err: any) => console.error('app error: ', err));
-const startPromise = apolloServer.start();
-
 // @ts-ignore
 const handler = cors(async (req: VercelRequest, res: VercelResponse) => {
   console.log(req.url);
-  await startPromise;
+  await apolloServer.start();
   const handler = apolloServer.createHandler({ path: '/api/graphql' });
   return handler(req, res);
 });

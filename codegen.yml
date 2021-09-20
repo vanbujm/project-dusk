@@ -1,5 +1,5 @@
 overwrite: true
-schema: "./graphql/**/*.ts"
+schema: "backend/graphql/typeDefs/index.ts"
 documents: "./src/**/*.tsx"
 generates:
   generated/graphql.ts:

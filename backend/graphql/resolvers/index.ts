@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { QueryResolvers, Resolvers } from '../../../generated/graphql';
 import { getPrismaClient } from '../../lib/prisma';
 
@@ -15,16 +14,20 @@ export type Context = {
 export type ValidatedContext = Required<Context>;
 
 const queryResolvers: QueryResolvers<ValidatedContext> = {
-  narrations(parent, { where }, { user }) {
-    console.log('narrations resolver');
-    return client.narration.findMany({
-      where: {
-        OR: [
-          { classes: { every: { ...(where as any), player: { every: { email: user.email } } } } },
-          { classes: { every: { ...(where as any), player: null } } },
-        ],
-      },
-    }) as any;
+  narrations: async (parent, { where }, { user }) => {
+    try {
+      return await client.narration.findMany({
+        where: {
+          OR: [
+            { classes: { every: { ...(where as any), player: { every: { email: user.email } } } } },
+            { classes: { every: { ...(where as any), player: undefined } } },
+          ],
+        },
+      });
+    } catch (e) {
+      console.error('db error:', e);
+      throw e;
+    }
   },
 };
 

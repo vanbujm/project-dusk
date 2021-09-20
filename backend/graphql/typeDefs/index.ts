@@ -14,7 +14,7 @@ export const typeDefs = gql`
 
     answer: Answer
 
-    classes: [Class!]!
+    classes: [Class!]
   }
 
   type Class {

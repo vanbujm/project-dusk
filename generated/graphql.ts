@@ -20,16 +20,16 @@ export type Scalars = {
 export type Answer = {
   __typename?: 'Answer';
   id: Scalars['ID'];
-  text: Scalars['String'];
   question?: Maybe<Narration>;
+  text: Scalars['String'];
 };
 
 export type Class = {
   __typename?: 'Class';
   id: Scalars['ID'];
   name: Scalars['String'];
-  sequence: Array<Narration>;
   player: Array<Player>;
+  sequence: Array<Narration>;
 };
 
 export type ClassUniqueInput = {
@@ -39,25 +39,25 @@ export type ClassUniqueInput = {
 
 export type Narration = {
   __typename?: 'Narration';
+  answer?: Maybe<Answer>;
+  classes?: Maybe<Array<Class>>;
   id: Scalars['ID'];
   text: Scalars['String'];
-  answer?: Maybe<Answer>;
-  classes: Array<Class>;
 };
 
 export type Player = {
   __typename?: 'Player';
-  id: Scalars['ID'];
-  email: Scalars['String'];
-  name: Scalars['String'];
-  class?: Maybe<Class>;
-  seenNarrations: Array<Narration>;
   answeredQuestions: Array<Narration>;
+  class?: Maybe<Class>;
+  email: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  seenNarrations: Array<Narration>;
 };
 
 export type PlayerUniqueInput = {
-  id?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
 };
 
@@ -193,29 +193,29 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Answer: ResolverTypeWrapper<Answer>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  String: ResolverTypeWrapper<Scalars['String']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Class: ResolverTypeWrapper<Class>;
   ClassUniqueInput: ClassUniqueInput;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Narration: ResolverTypeWrapper<Narration>;
   Player: ResolverTypeWrapper<Player>;
   PlayerUniqueInput: PlayerUniqueInput;
   Query: ResolverTypeWrapper<{}>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  String: ResolverTypeWrapper<Scalars['String']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Answer: Answer;
-  ID: Scalars['ID'];
-  String: Scalars['String'];
+  Boolean: Scalars['Boolean'];
   Class: Class;
   ClassUniqueInput: ClassUniqueInput;
+  ID: Scalars['ID'];
   Narration: Narration;
   Player: Player;
   PlayerUniqueInput: PlayerUniqueInput;
   Query: {};
-  Boolean: Scalars['Boolean'];
+  String: Scalars['String'];
 };
 
 export type AnswerResolvers<
@@ -223,8 +223,8 @@ export type AnswerResolvers<
   ParentType extends ResolversParentTypes['Answer'] = ResolversParentTypes['Answer']
 > = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   question?: Resolver<Maybe<ResolversTypes['Narration']>, ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -234,8 +234,8 @@ export type ClassResolvers<
 > = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sequence?: Resolver<Array<ResolversTypes['Narration']>, ParentType, ContextType>;
   player?: Resolver<Array<ResolversTypes['Player']>, ParentType, ContextType>;
+  sequence?: Resolver<Array<ResolversTypes['Narration']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -243,10 +243,10 @@ export type NarrationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Narration'] = ResolversParentTypes['Narration']
 > = {
+  answer?: Resolver<Maybe<ResolversTypes['Answer']>, ParentType, ContextType>;
+  classes?: Resolver<Maybe<Array<ResolversTypes['Class']>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  answer?: Resolver<Maybe<ResolversTypes['Answer']>, ParentType, ContextType>;
-  classes?: Resolver<Array<ResolversTypes['Class']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -254,12 +254,12 @@ export type PlayerResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Player'] = ResolversParentTypes['Player']
 > = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  class?: Resolver<Maybe<ResolversTypes['Class']>, ParentType, ContextType>;
-  seenNarrations?: Resolver<Array<ResolversTypes['Narration']>, ParentType, ContextType>;
   answeredQuestions?: Resolver<Array<ResolversTypes['Narration']>, ParentType, ContextType>;
+  class?: Resolver<Maybe<ResolversTypes['Class']>, ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  seenNarrations?: Resolver<Array<ResolversTypes['Narration']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
