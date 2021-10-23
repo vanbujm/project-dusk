@@ -4,6 +4,6 @@ node_modules
 dist
 yarn-error.log
 .vercel
-api
+api/graphql.js
 .idea
 project-dusk.iml
